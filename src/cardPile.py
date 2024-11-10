@@ -1,5 +1,4 @@
 from collections import namedtuple
-from utility import gameConfig
 
 
 class CardPile:
@@ -7,7 +6,10 @@ class CardPile:
         self.CardOrder = namedtuple(
             'CardOrder', ['foundation', 'rank', 'color_suit'])
         self.card_width, self.card_height = card_size
-        self.draw_three = gameConfig.retrieve_preferences()['draw_three']
+
+        # Set a default value for draw_three
+        self.draw_three = False  # This is your default setting for draw_three
+
         self.pile_type = pile_type
         if self.pile_type == 'tableau':
             self.fanned = True
@@ -33,6 +35,7 @@ class CardPile:
                 foundation=None, rank=None, color_suit=None)
             self.face_up = 'none'
             self.height = self.card_height
+
         self.max_card_spacing = 60
         self.min_card_spacing = 10
         self.card_spacing = self.max_card_spacing
