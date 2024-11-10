@@ -31,8 +31,8 @@ class Button:
         return ((self.display_height // 2) - (self.height // 2)) + self.y_offset if self.centered else self.y_offset
 
     def check_for_mouse_over(self, mouse_pos):
-        mouse_x, mouse_y = mouse_pos
-        return self.getX() < mouse_x < self.getX() + self.width and self.getY() < mouse_y < self.getY() + self.height
+        Xmouse, Ymouse = mouse_pos
+        return self.getX() < Xmouse < self.getX() + self.width and self.getY() < Ymouse < self.getY() + self.height
 
     def check_if_clicked(self, mouse_pos):
         return self.check_for_mouse_over(mouse_pos) and self.enabled
@@ -86,9 +86,9 @@ class Radio:
         return (self.display_height // 2) + self.y_offset if self.centered else self.y_offset
 
     def check_for_mouse_over(self, mouse_pos):
-        mouse_x, mouse_y = mouse_pos
-        distance = sqrt((abs(self.getX() - mouse_x) ** 2) +
-                        (abs(self.getY() - mouse_y) ** 2))
+        Xmouse, Ymouse = mouse_pos
+        distance = sqrt((abs(self.getX() - Xmouse) ** 2) +
+                        (abs(self.getY() - Ymouse) ** 2))
         return distance < self.size
 
     def check_if_clicked(self, mouse_pos, radio_group):
@@ -123,8 +123,8 @@ class Checkbox:
         return ((self.display_height // 2) - (self.size // 2)) + self.y_offset if self.centered else self.y_offset
 
     def check_for_mouse_over(self, mouse_pos):
-        mouse_x, mouse_y = mouse_pos
-        return self.getX() < mouse_x < self.getX() + self.size and self.getY() < mouse_y < self.getY() + self.size
+        Xmouse, Ymouse = mouse_pos
+        return self.getX() < Xmouse < self.getX() + self.size and self.getY() < Ymouse < self.getY() + self.size
 
     def check_if_clicked(self, mouse_pos):
         if self.check_for_mouse_over(mouse_pos) and self.enabled:
@@ -140,7 +140,7 @@ class Checkbox:
 
 
 class Text:
-    def __init__(self, display_dimensions, offsets, text, size, color, font="OpenSans-Bold", centered=True):
+    def __init__(self, display_dimensions, offsets, text, size, color, font="font", centered=True):
         self.display_width, self.display_height = display_dimensions
         self.x_offset, self.y_offset = offsets
         self.text = text

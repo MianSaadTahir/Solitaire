@@ -22,9 +22,9 @@ class CardDeck:
         self.card_piles = card_piles
         self.card_images = card_images
         self.card_size = card_size
-        name_of_image = os.path.join(
+        name = os.path.join(
             '..', 'assets', 'cards', 'back_card.png')
-        self.card_back_image = pygame.image.load(name_of_image)
+        self.card_back_image = pygame.image.load(name)
         self.card_back = self._resize_card_back()
         self.card_selection_history = deque()
 
@@ -32,19 +32,19 @@ class CardDeck:
         return pygame.transform.scale(self.card_back_image, self.card_size)
 
     def _resize_all_card_images(self):
-        for name_of_image, card_image in self.card_images.items():
-            self.card_images[name_of_image] = pygame.transform.scale(
+        for name, card_image in self.card_images.items():
+            self.card_images[name] = pygame.transform.scale(
                 card_image, self.card_size)
 
     def _initialize_deck(self):
         for suit in self.suits:
             for rank in self.ranks:
-                name_of_image = os.path.join(
+                name = os.path.join(
                     '..', 'assets', 'cards', '{}_of_{}.png'.format(rank, suit))
-                self.card_images[name_of_image] = pygame.image.load(
-                    name_of_image)
+                self.card_images[name] = pygame.image.load(
+                    name)
                 self.cards.append(
-                    Card(name_of_image, self.card_size, rank, suit))
+                    Card(name, self.card_size, rank, suit))
         self._resize_all_card_images()
 
     def _initialize_card_piles(self, display_size):
@@ -90,32 +90,32 @@ class CardDeck:
         self.selected_pile = None
         self.selected_cards = []
 
-    def _identify_clicked_pile(self, mouse_position):
+    def _identify_clicked_pile(self, mouseCoordinate):
         for pile in self.card_piles:
-            if pile.is_pile_clicked(mouse_position):
+            if pile.is_pile_clicked(mouseCoordinate):
                 return pile
         return None
 
     def update_deck(self, piles_to_update, display_height):
         for pile in self.card_piles:
-            pile.update_face_up()
+            pile.update_faceUp()
             pile.update_card_positions()
         if piles_to_update:
             for pile in piles_to_update:
                 pile.fit_pile_on_screen(display_height)
                 pile.update_card_positions()
 
-    def handle_left_click(self, mouse_position):
+    def handle_left_click(self, mouseCoordinate):
         piles_to_update = None
         valid_move = False
         if not self.selection:
-            self.selected_pile = self._identify_clicked_pile(mouse_position)
+            self.selected_pile = self._identify_clicked_pile(mouseCoordinate)
             if self.selected_pile:
                 if self.selected_pile.pile_type == 'stock':
                     valid_move = True
             if self.selected_pile:
                 self.selection, self.selected_cards, deselect_pile = self.selected_pile.check_if_selected(
-                    mouse_position, self.card_piles)
+                    mouseCoordinate, self.card_piles)
                 if deselect_pile:
                     self.reset_selection()
                 else:
@@ -123,7 +123,7 @@ class CardDeck:
                         self.selection_rect = self.selected_pile.get_selection_area(
                             self.selected_cards[0])
         else:
-            pile_to_transfer_to = self._identify_clicked_pile(mouse_position)
+            pile_to_transfer_to = self._identify_clicked_pile(mouseCoordinate)
             if self.selected_pile and pile_to_transfer_to:
                 valid_move = self.selected_pile.move_cards_to_pile(
                     self.selected_cards, pile_to_transfer_to, self.ranks)
@@ -133,7 +133,7 @@ class CardDeck:
             self.reset_selection()
         return piles_to_update, valid_move
 
-    def handle_right_click(self, mouse_position):
+    def handle_right_click(self, mouseCoordinate):
         self.reset_selection()
 
     def check_for_win_condition(self):
@@ -153,7 +153,7 @@ class CardDeck:
                 if self.selection and self.selection_rect and card == self.selected_cards[0]:
                     pygame.draw.rect(
                         game_display, self.selection_color, self.selection_rect)
-                img = self.card_images[card.name_of_image] if card.face_up else self.card_back
+                img = self.card_images[card.name] if card.faceUp else self.card_back
                 game_display.blit(img, [card.getX(), card.getY()])
 
 
@@ -168,7 +168,7 @@ class CompressedDeck:
         return CardDeck(self.card_piles, card_images, card_size)
 
     def toString(self):
-        return str([card for card in self.card_piles if card.face_up])
+        return str([card for card in self.card_piles if card.faceUp])
 
     def print(self):
         return f"CompressedDeck #{self.id}"

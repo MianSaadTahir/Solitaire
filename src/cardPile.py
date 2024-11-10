@@ -15,25 +15,25 @@ class CardPile:
             self.fanned = True
             self.order = self.CardOrder(
                 foundation='king', rank=-1, color_suit='alt-color')
-            self.face_up = 'top'
+            self.faceUp = 'top'
             self.height = 500
         elif self.pile_type == 'foundation':
             self.fanned = False
             self.order = self.CardOrder(
                 foundation='ace', rank=1, color_suit='same-suit')
-            self.face_up = 'all'
+            self.faceUp = 'all'
             self.height = self.card_height
         elif self.pile_type == 'waste':
             self.fanned = False
             self.order = self.CardOrder(
                 foundation=None, rank=None, color_suit=None)
-            self.face_up = 'all'
+            self.faceUp = 'all'
             self.height = self.card_height
         elif self.pile_type == 'stock':
             self.fanned = False
             self.order = self.CardOrder(
                 foundation=None, rank=None, color_suit=None)
-            self.face_up = 'none'
+            self.faceUp = 'none'
             self.height = self.card_height
 
         self.max_card_spacing = 60
@@ -46,30 +46,30 @@ class CardPile:
         self.adjust_pile()
 
     def card_bottom(self):
-        return self.cards[-1].position[1] + self.card_height if self.cards else self.y
+        return self.cards[-1].coordinate[1] + self.card_height if self.cards else self.y
 
     def adjust_pile(self):
-        self.update_face_up()
+        self.update_faceUp()
         self.update_card_positions()
 
     def update_card_positions(self):
         if len(self.cards) > 0:
             for index, card in enumerate(self.cards):
                 if self.fanned:
-                    card.position = (self.x, self.y +
-                                     (index * self.card_spacing))
+                    card.coordinate = (self.x, self.y +
+                                       (index * self.card_spacing))
                 else:
-                    card.position = (self.x, self.y)
+                    card.coordinate = (self.x, self.y)
 
-    def update_face_up(self):
+    def update_faceUp(self):
         if len(self.cards) != 0:
             for index, card in enumerate(self.cards):
-                if self.face_up == 'none':
-                    card.face_up = False
-                elif self.face_up == 'top' and index == len(self.cards) - 1:
-                    card.face_up = True
-                elif self.face_up == 'all':
-                    card.face_up = True
+                if self.faceUp == 'none':
+                    card.faceUp = False
+                elif self.faceUp == 'top' and index == len(self.cards) - 1:
+                    card.faceUp = True
+                elif self.faceUp == 'all':
+                    card.faceUp = True
 
     def fit_pile_on_screen(self, screen_height):
         screen_bottom = screen_height - self.bottom_margin
@@ -90,12 +90,12 @@ class CardPile:
                         self.update_card_positions()
             self.card_spacing = round(self.card_spacing)
 
-    def check_if_selected(self, mouse_position, piles):
+    def check_if_selected(self, mouseCoordinate, piles):
         selection = False
         selected_cards = []
         deselect_pile = False
         for index, card in enumerate(self.cards):
-            if card.is_clicked(mouse_position) and card.face_up:
+            if card.checkClick(mouseCoordinate) and card.faceUp:
                 selection = True
                 selected_cards = self.cards[index:]
         if self.pile_type == 'stock':
@@ -164,6 +164,6 @@ class CardPile:
         rect_h = self.card_height + (padding * 2)
         return [rect_x, rect_y, rect_w, rect_h]
 
-    def is_pile_clicked(self, mouse_position):
-        mouse_x, mouse_y = mouse_position
-        return self.x < mouse_x < self.x + self.card_width and self.y < mouse_y < self.y + self.height
+    def is_pile_clicked(self, mouseCoordinate):
+        Xmouse, Ymouse = mouseCoordinate
+        return self.x < Xmouse < self.x + self.card_width and self.y < Ymouse < self.y + self.height
