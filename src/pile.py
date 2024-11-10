@@ -2,39 +2,39 @@ from collections import namedtuple
 
 
 class pile:
-    def __init__(self, cards, x, y, dimensions, pile_type="tableau"):
+    def __init__(self, cards, x, y, dimensions, type="tableau"):
         self.CardOrder = namedtuple(
             'CardOrder', ['foundation', 'rank', 'color_suit'])
-        self.card_width, self.card_height = dimensions
+        self.CardW, self.CardH = dimensions
 
         # Set a default value for draw_three
         self.draw_three = False  # This is your default setting for draw_three
 
-        self.pile_type = pile_type
-        if self.pile_type == 'tableau':
+        self.type = type
+        if self.type == 'tableau':
             self.fanned = True
             self.order = self.CardOrder(
                 foundation='king', rank=-1, color_suit='alt-color')
             self.faceUp = 'top'
             self.height = 500
-        elif self.pile_type == 'foundation':
+        elif self.type == 'foundation':
             self.fanned = False
             self.order = self.CardOrder(
                 foundation='ace', rank=1, color_suit='same-suit')
             self.faceUp = 'all'
-            self.height = self.card_height
-        elif self.pile_type == 'waste':
+            self.height = self.CardH
+        elif self.type == 'waste':
             self.fanned = False
             self.order = self.CardOrder(
                 foundation=None, rank=None, color_suit=None)
             self.faceUp = 'all'
-            self.height = self.card_height
-        elif self.pile_type == 'stock':
+            self.height = self.CardH
+        elif self.type == 'stock':
             self.fanned = False
             self.order = self.CardOrder(
                 foundation=None, rank=None, color_suit=None)
             self.faceUp = 'none'
-            self.height = self.card_height
+            self.height = self.CardH
 
         self.max_card_spacing = 60
         self.min_card_spacing = 10
@@ -46,13 +46,13 @@ class pile:
         self.adjust_pile()
 
     def card_bottom(self):
-        return self.cards[-1].coordinate[1] + self.card_height if self.cards else self.y
+        return self.cards[-1].coordinate[1] + self.CardH if self.cards else self.y
 
     def adjust_pile(self):
-        self.update_faceUp()
-        self.update_card_positions()
+        self.FaceUpChange()
+        self.CardCoordinateChange()
 
-    def update_card_positions(self):
+    def CardCoordinateChange(self):
         if len(self.cards) > 0:
             for index, card in enumerate(self.cards):
                 if self.fanned:
@@ -61,7 +61,7 @@ class pile:
                 else:
                     card.coordinate = (self.x, self.y)
 
-    def update_faceUp(self):
+    def FaceUpChange(self):
         if len(self.cards) != 0:
             for index, card in enumerate(self.cards):
                 if self.faceUp == 'none':
@@ -80,14 +80,14 @@ class pile:
                         break
                     else:
                         self.card_spacing -= 1 / len(self.cards)
-                        self.update_card_positions()
+                        self.CardCoordinateChange()
             elif self.card_bottom() < screen_bottom:
                 while self.card_spacing < self.max_card_spacing:
                     if self.card_bottom() > screen_bottom:
                         break
                     else:
                         self.card_spacing += 1 / len(self.cards)
-                        self.update_card_positions()
+                        self.CardCoordinateChange()
             self.card_spacing = round(self.card_spacing)
 
     def check_if_selected(self, mouseCoordinate, piles):
@@ -98,10 +98,10 @@ class pile:
             if card.checkClick(mouseCoordinate) and card.faceUp:
                 selection = True
                 selected_cards = self.cards[index:]
-        if self.pile_type == 'stock':
+        if self.type == 'stock':
             deselect_pile = True
             wastepile = next(
-                (pile for pile in piles if pile.pile_type == 'waste'), None)
+                (pile for pile in piles if pile.type == 'waste'), None)
             if len(self.cards) != 0:
                 if self.draw_three:
                     index_range = min(len(self.cards), 3)
@@ -123,7 +123,7 @@ class pile:
             bottom_card = None
         top_card = selected_cards[0]
         valid = True
-        if target_pile.pile_type in ['stock', 'waste']:
+        if target_pile.type in ['stock', 'waste']:
             valid = False
         if bottom_card is None:
             if target_pile.order.foundation is not None:
@@ -160,10 +160,10 @@ class pile:
             distance_from_top = card_index
         else:
             distance_from_top = 0
-        rect_w = self.card_width + (padding * 2)
-        rect_h = self.card_height + (padding * 2)
+        rect_w = self.CardW + (padding * 2)
+        rect_h = self.CardH + (padding * 2)
         return [rect_x, rect_y, rect_w, rect_h]
 
-    def is_pile_clicked(self, mouseCoordinate):
+    def isClicked(self, mouseCoordinate):
         Xmouse, Ymouse = mouseCoordinate
-        return self.x < Xmouse < self.x + self.card_width and self.y < Ymouse < self.y + self.height
+        return self.x < Xmouse < self.x + self.CardW and self.y < Ymouse < self.y + self.height
