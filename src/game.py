@@ -67,7 +67,7 @@ class MoveHistory:
         self.record_move(deck)
 
     def record_move(self, deck):
-        self.history.append(CompressedDeck(deepcopy(deck.card_piles)))
+        self.history.append(CompressedDeck(deepcopy(deck.pileCards)))
 
     def make_valid_move(self, deck):
         self.record_move(deck)
@@ -77,7 +77,7 @@ class MoveHistory:
         if self.current_index > 0:
             del self.history[-1]
             self.current_index -= 1
-            return deepcopy(self.history[self.current_index]).decompress(deck.card_images, deck.card_size)
+            return deepcopy(self.history[self.current_index]).decompress(deck.imgs, deck.dimensions)
         else:
             return deck
 
@@ -92,7 +92,7 @@ def game_loop():
     deck = Deck()
     deck._initialize_deck()
     deck.shuffle_deck()
-    deck._initialize_card_piles(display_dimensions)
+    deck._initialize_pileCards(display_dimensions)
 
     move_history = MoveHistory(deck)
 

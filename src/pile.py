@@ -2,10 +2,10 @@ from collections import namedtuple
 
 
 class pile:
-    def __init__(self, cards, x, y, card_size, pile_type="tableau"):
+    def __init__(self, cards, x, y, dimensions, pile_type="tableau"):
         self.CardOrder = namedtuple(
             'CardOrder', ['foundation', 'rank', 'color_suit'])
-        self.card_width, self.card_height = card_size
+        self.card_width, self.card_height = dimensions
 
         # Set a default value for draw_three
         self.draw_three = False  # This is your default setting for draw_three

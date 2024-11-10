@@ -4,9 +4,11 @@ class Card:
         self.suit = suit
         self.rank = rank
         self.faceUp = faceUp
+
         self.coordinate = (0, 0)  # default position of card (x, y)
         self.color = self.checkColor()
-        self.size = size  # size of card
+
+        self.size = size  # dimension size of card
         self.name = name  # name of card imgs
 
     # display string card name
@@ -28,11 +30,13 @@ class Card:
     def checkClick(self, mouseCoordinate):
         width, height = self.size
         Xmouse, Ymouse = mouseCoordinate
+
         return self.getX() < Xmouse < self.getX() + width and self.getY() < Ymouse < self.getY() + height
 
     # card suit color
     def checkColor(self):
         if self.suit == 'clubs' or self.suit == 'spades':
             return 'black'
+
         elif self.suit == 'hearts' or self.suit == 'diamonds':
             return 'red'
