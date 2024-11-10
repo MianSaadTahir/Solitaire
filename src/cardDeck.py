@@ -154,7 +154,7 @@ class CardDeck:
                     pygame.draw.rect(
                         game_display, self.selection_color, self.selection_rect)
                 img = self.card_images[card.name_of_image] if card.face_up else self.card_back
-                game_display.blit(img, [card.get_x(), card.get_y()])
+                game_display.blit(img, [card.getX(), card.getY()])
 
 
 class CompressedDeck:
@@ -167,8 +167,8 @@ class CompressedDeck:
     def decompress(self, card_images, card_size):
         return CardDeck(self.card_piles, card_images, card_size)
 
-    def __str__(self):
+    def toString(self):
         return str([card for card in self.card_piles if card.face_up])
 
-    def __repr__(self):
+    def print(self):
         return f"CompressedDeck #{self.id}"

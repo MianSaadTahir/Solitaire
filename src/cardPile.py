@@ -153,8 +153,8 @@ class CardPile:
 
     def get_selection_area(self, card):
         padding = 10
-        rect_x = card.get_x() - padding
-        rect_y = card.get_y() - padding
+        rect_x = card.getX() - padding
+        rect_y = card.getY() - padding
         card_index = self.cards.index(card)
         if self.fanned:
             distance_from_top = card_index

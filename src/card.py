@@ -8,28 +8,28 @@ class Card:
         self.suit = suit
         self.rank = rank
         self.face_up = face_up
-        self.color = self._determine_color()
+        self.color = self.checkColor()
         self.position = (0, 0)
 
-    def _determine_color(self):
-        if self.suit == 'diamonds' or self.suit == 'hearts':
-            return 'red'
-        elif self.suit == 'spades' or self.suit == 'clubs':
+    def checkColor(self):
+        if self.suit == 'clubs' or self.suit == 'spades':
             return 'black'
+        elif self.suit == 'hearts' or self.suit == 'diamonds':
+            return 'red'
 
     def is_clicked(self, mouse_position):
         width, height = self.card_size
         mouse_x, mouse_y = mouse_position
-        return self.get_x() < mouse_x < self.get_x() + width and self.get_y() < mouse_y < self.get_y() + height
+        return self.getX() < mouse_x < self.getX() + width and self.getY() < mouse_y < self.getY() + height
 
-    def get_x(self):
+    def getX(self):
         return self.position[0]
 
-    def get_y(self):
+    def getY(self):
         return self.position[1]
 
-    def __str__(self):
+    def toString(self):
         return "{} of {}".format(self.rank, self.suit)
 
-    def __repr__(self):
-        return self.__str__()
+    def print(self):
+        return self.toString()

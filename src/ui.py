@@ -24,15 +24,15 @@ class Button:
         self.centered = centered
         self.action = action
 
-    def get_x(self):
+    def getX(self):
         return ((self.display_width // 2) - (self.width // 2)) + self.x_offset if self.centered else self.x_offset
 
-    def get_y(self):
+    def getY(self):
         return ((self.display_height // 2) - (self.height // 2)) + self.y_offset if self.centered else self.y_offset
 
     def check_for_mouse_over(self, mouse_pos):
         mouse_x, mouse_y = mouse_pos
-        return self.get_x() < mouse_x < self.get_x() + self.width and self.get_y() < mouse_y < self.get_y() + self.height
+        return self.getX() < mouse_x < self.getX() + self.width and self.getY() < mouse_y < self.getY() + self.height
 
     def check_if_clicked(self, mouse_pos):
         return self.check_for_mouse_over(mouse_pos) and self.enabled
@@ -46,7 +46,7 @@ class Button:
         if not self.enabled:
             button_color = self.disabled_color
             self.text_object.color = self.disabled_text_color
-        button_info = (self.get_x(), self.get_y(), self.width, self.height)
+        button_info = (self.getX(), self.getY(), self.width, self.height)
         pygame.draw.rect(game_display, button_color, list(button_info))
         self.text_object.button_text_display(game_display, button_info)
 
@@ -79,16 +79,16 @@ class Radio:
         self.color = (200, 200, 200)
         self.checked_color = (50, 50, 50)
 
-    def get_x(self):
+    def getX(self):
         return (self.display_width // 2) + self.x_offset if self.centered else self.x_offset
 
-    def get_y(self):
+    def getY(self):
         return (self.display_height // 2) + self.y_offset if self.centered else self.y_offset
 
     def check_for_mouse_over(self, mouse_pos):
         mouse_x, mouse_y = mouse_pos
-        distance = sqrt((abs(self.get_x() - mouse_x) ** 2) +
-                        (abs(self.get_y() - mouse_y) ** 2))
+        distance = sqrt((abs(self.getX() - mouse_x) ** 2) +
+                        (abs(self.getY() - mouse_y) ** 2))
         return distance < self.size
 
     def check_if_clicked(self, mouse_pos, radio_group):
@@ -98,10 +98,10 @@ class Radio:
 
     def display(self, game_display):
         pygame.draw.circle(game_display, self.color,
-                           (self.get_x(), self.get_y()), self.size)
+                           (self.getX(), self.getY()), self.size)
         if self.checked:
             pygame.draw.circle(game_display, self.checked_color,
-                               (self.get_x(), self.get_y()), self.size - self.margin)
+                               (self.getX(), self.getY()), self.size - self.margin)
 
 
 class Checkbox:
@@ -116,15 +116,15 @@ class Checkbox:
         self.color = (200, 200, 200)
         self.checked_color = (50, 50, 50)
 
-    def get_x(self):
+    def getX(self):
         return ((self.display_width // 2) - (self.size // 2)) + self.x_offset if self.centered else self.x_offset
 
-    def get_y(self):
+    def getY(self):
         return ((self.display_height // 2) - (self.size // 2)) + self.y_offset if self.centered else self.y_offset
 
     def check_for_mouse_over(self, mouse_pos):
         mouse_x, mouse_y = mouse_pos
-        return self.get_x() < mouse_x < self.get_x() + self.size and self.get_y() < mouse_y < self.get_y() + self.size
+        return self.getX() < mouse_x < self.getX() + self.size and self.getY() < mouse_y < self.getY() + self.size
 
     def check_if_clicked(self, mouse_pos):
         if self.check_for_mouse_over(mouse_pos) and self.enabled:
@@ -132,11 +132,11 @@ class Checkbox:
 
     def display(self, game_display):
         pygame.draw.rect(game_display, self.color, [
-                         self.get_x(), self.get_y(), self.size, self.size])
+                         self.getX(), self.getY(), self.size, self.size])
         if self.checked:
             self.checkmark = pygame.transform.scale(
                 self.checkmark, (self.size, self.size))
-            game_display.blit(self.checkmark, [self.get_x(), self.get_y()])
+            game_display.blit(self.checkmark, [self.getX(), self.getY()])
 
 
 class Text:
