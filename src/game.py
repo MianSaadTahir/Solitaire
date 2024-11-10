@@ -1,5 +1,5 @@
 import pygame
-from Deck import Deck
+from deck import Deck
 
 light_gray = (211, 211, 211)
 dark_blue = (28, 40, 51)

@@ -2,7 +2,7 @@ import pygame
 import random
 import os
 from card import Card
-from pile import pile
+from pile import Pile
 
 
 class Deck:
@@ -43,9 +43,9 @@ class Deck:
         Yinitial = self.dimensions[1] + 150
 
         # stock and waste piles
-        stock = pile(
+        stock = Pile(
             self.cards[28:], Xinitial, padding, self.dimensions, type="stock")
-        waste = pile([], Xinitial + self.dimensions[0] + padding,
+        waste = Pile([], Xinitial + self.dimensions[0] + padding,
                      padding, self.dimensions, type="waste")
 
         # foundation piles spacing
@@ -54,28 +54,28 @@ class Deck:
         fInitial = width - (fPadding * 4)
 
         # foundations
-        f1 = pile(
+        f1 = Pile(
             [], fInitial, padding, self.dimensions, type="foundation")
-        f2 = pile([], fInitial + fPadding,
+        f2 = Pile([], fInitial + fPadding,
                   padding, self.dimensions, type="foundation")
-        f3 = pile([], fInitial + fPadding * 2,
+        f3 = Pile([], fInitial + fPadding * 2,
                   padding, self.dimensions, type="foundation")
-        f4 = pile([], fInitial + fPadding * 3,
+        f4 = Pile([], fInitial + fPadding * 3,
                   padding, self.dimensions, type="foundation")
 
         # tableaus
-        t1 = pile([self.cards[0]], Xinitial, Yinitial, self.dimensions)
-        t2 = pile(
+        t1 = Pile([self.cards[0]], Xinitial, Yinitial, self.dimensions)
+        t2 = Pile(
             self.cards[1:3], Xinitial + self.dimensions[0] + padding, Yinitial, self.dimensions)
-        t3 = pile(self.cards[3:6], Xinitial + self.dimensions[0]
+        t3 = Pile(self.cards[3:6], Xinitial + self.dimensions[0]
                   * 2 + padding * 2, Yinitial, self.dimensions)
-        t4 = pile(self.cards[6:10], Xinitial + self.dimensions[0]
+        t4 = Pile(self.cards[6:10], Xinitial + self.dimensions[0]
                   * 3 + padding * 3, Yinitial, self.dimensions)
-        t5 = pile(self.cards[10:15], Xinitial + self.dimensions[0]
+        t5 = Pile(self.cards[10:15], Xinitial + self.dimensions[0]
                   * 4 + padding * 4, Yinitial, self.dimensions)
-        t6 = pile(self.cards[15:21], Xinitial + self.dimensions[0]
+        t6 = Pile(self.cards[15:21], Xinitial + self.dimensions[0]
                   * 5 + padding * 5, Yinitial, self.dimensions)
-        t7 = pile(self.cards[21:28], Xinitial + self.dimensions[0]
+        t7 = Pile(self.cards[21:28], Xinitial + self.dimensions[0]
                   * 6 + padding * 6, Yinitial, self.dimensions)
 
         # collection of all piles
