@@ -1,5 +1,5 @@
 import pygame
-from cardDeck import CardDeck, CompressedDeck
+from Deck import Deck, CompressedDeck
 from ui import Text, Button
 from copy import deepcopy
 
@@ -89,7 +89,7 @@ def game_loop():
         display_dimensions[0]-60, 10), (50, 40), slate_gray, centered=False, text_size=15, action="pause")
     buttons = [undo_button, pause_button]
 
-    deck = CardDeck()
+    deck = Deck()
     deck._initialize_deck()
     deck.shuffle_deck()
     deck._initialize_card_piles(display_dimensions)

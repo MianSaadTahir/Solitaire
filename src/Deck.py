@@ -3,11 +3,11 @@ import random
 import pygame
 from itertools import count
 from collections import deque
-from cardPile import CardPile
+from pile import pile
 from card import Card
 
 
-class CardDeck:
+class Deck:
     def __init__(self, card_piles=[], card_images={}, card_size=(100, 150)):
         self.cards = []
         self.suits = ['clubs', 'diamonds', 'hearts', 'spades']
@@ -54,31 +54,31 @@ class CardDeck:
         start_y = self.card_size[1] + 100
         foundation_x_step = self.card_size[0] + pile_spacing
         foundation_start_x = display_width - (foundation_x_step * 4)
-        tableau1 = CardPile([self.cards[0]], start_x, start_y, self.card_size)
-        tableau2 = CardPile(
+        tableau1 = pile([self.cards[0]], start_x, start_y, self.card_size)
+        tableau2 = pile(
             self.cards[1:3], start_x + self.card_size[0] + pile_spacing, start_y, self.card_size)
-        tableau3 = CardPile(self.cards[3:6], start_x + self.card_size[0]
-                            * 2 + pile_spacing * 2, start_y, self.card_size)
-        tableau4 = CardPile(self.cards[6:10], start_x + self.card_size[0]
-                            * 3 + pile_spacing * 3, start_y, self.card_size)
-        tableau5 = CardPile(self.cards[10:15], start_x + self.card_size[0]
-                            * 4 + pile_spacing * 4, start_y, self.card_size)
-        tableau6 = CardPile(self.cards[15:21], start_x + self.card_size[0]
-                            * 5 + pile_spacing * 5, start_y, self.card_size)
-        tableau7 = CardPile(self.cards[21:28], start_x + self.card_size[0]
-                            * 6 + pile_spacing * 6, start_y, self.card_size)
-        stock = CardPile(
+        tableau3 = pile(self.cards[3:6], start_x + self.card_size[0]
+                        * 2 + pile_spacing * 2, start_y, self.card_size)
+        tableau4 = pile(self.cards[6:10], start_x + self.card_size[0]
+                        * 3 + pile_spacing * 3, start_y, self.card_size)
+        tableau5 = pile(self.cards[10:15], start_x + self.card_size[0]
+                        * 4 + pile_spacing * 4, start_y, self.card_size)
+        tableau6 = pile(self.cards[15:21], start_x + self.card_size[0]
+                        * 5 + pile_spacing * 5, start_y, self.card_size)
+        tableau7 = pile(self.cards[21:28], start_x + self.card_size[0]
+                        * 6 + pile_spacing * 6, start_y, self.card_size)
+        stock = pile(
             self.cards[28:], start_x, pile_spacing, self.card_size, pile_type="stock")
-        waste = CardPile([], start_x + self.card_size[0] + pile_spacing,
-                         pile_spacing, self.card_size, pile_type="waste")
-        foundation1 = CardPile(
+        waste = pile([], start_x + self.card_size[0] + pile_spacing,
+                     pile_spacing, self.card_size, pile_type="waste")
+        foundation1 = pile(
             [], foundation_start_x, pile_spacing, self.card_size, pile_type="foundation")
-        foundation2 = CardPile([], foundation_start_x + foundation_x_step,
-                               pile_spacing, self.card_size, pile_type="foundation")
-        foundation3 = CardPile([], foundation_start_x + foundation_x_step * 2,
-                               pile_spacing, self.card_size, pile_type="foundation")
-        foundation4 = CardPile([], foundation_start_x + foundation_x_step * 3,
-                               pile_spacing, self.card_size, pile_type="foundation")
+        foundation2 = pile([], foundation_start_x + foundation_x_step,
+                           pile_spacing, self.card_size, pile_type="foundation")
+        foundation3 = pile([], foundation_start_x + foundation_x_step * 2,
+                           pile_spacing, self.card_size, pile_type="foundation")
+        foundation4 = pile([], foundation_start_x + foundation_x_step * 3,
+                           pile_spacing, self.card_size, pile_type="foundation")
         self.card_piles = [tableau1, tableau2, tableau3, tableau4, tableau5, tableau6, tableau7, stock, waste,
                            foundation1, foundation2, foundation3, foundation4]
 
@@ -165,7 +165,7 @@ class CompressedDeck:
         self.card_piles = card_piles
 
     def decompress(self, card_images, card_size):
-        return CardDeck(self.card_piles, card_images, card_size)
+        return Deck(self.card_piles, card_images, card_size)
 
     def toString(self):
         return str([card for card in self.card_piles if card.faceUp])

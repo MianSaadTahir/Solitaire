@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 
-class CardPile:
+class pile:
     def __init__(self, cards, x, y, card_size, pile_type="tableau"):
         self.CardOrder = namedtuple(
             'CardOrder', ['foundation', 'rank', 'color_suit'])
