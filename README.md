@@ -21,23 +21,27 @@ Dictionary for tracking card positions and states <br>
 - **User Interface**:  Built with Pygame, providing an interactive GUI where players can select and drop cards.
 - **Win Condition**:  The game ends when all cards are moved to the foundation piles in the correct order.
 
-### Step 2: Install Microsoft Visual Studio
+## Screenshot
+<img src="assets/wireframe/screenshot.png" alt="Screenshot" width="75%">
 
-Download Microsoft Visual Studio from the official website:  
-[Visual Studio Download](https://visualstudio.microsoft.com/downloads/)
+## Usage
+1. Clone the repository:
+   `git clone https://github.com/miansaadtahir/solitaire.git`
+2. Install pygame dependencies by running command `pip install pygame` in terminal
+3. Navigate to the project directory:
+   `cd Solitaire/src/`
+4. Open terminal in this directory and run command `python game.py` to launch the game.
 
-### Step 3: Install .NET Desktop Development
+## Documentation
+For a detailed overview of the project and its features, visit the [Documentation](./documentation/) in the repository.
 
-During installation, make sure to select the **.NET desktop development** workload. This will provide all the tools and libraries needed to run the project.
+## Technologies Used
+- Python
+- Pygame
 
-<div align="center">
-    ![alt text](image.png)
-</div>
+## Contributing
+Contributions, issues, and feature requests are welcome!  
+Feel free to check out the [issues page](https://github.com/miansaadtahir/solitaire/issues) for more information.
 
-### Step 4: Open and Run the Project
-
-1. Open the extracted project folder and locate the `.sln` file.
-2. Double-click on the `.sln` file to open it in Visual Studio.
-3. Once Visual Studio opens, simply click **Start** or press `F5` to run the game.
-
-Enjoy playing Solitaire!
+## License
+Distributed under the MIT License. See [LICENSE](./LICENSE) for more details.
