@@ -1,6 +1,6 @@
 # Solitaire
 
-**Klondike-Solitaire** is a Solitaire game based on Klondike rules. It is developed in python with Pygame. It implements different data structures including python lists, stacks, queues, linked lists and hash-map to manage cards and piles. 
+**Klondike-Solitaire**  is a Python implementation of the classic Solitaire card game, following the traditional Klondike rules. The game allows users to interact with a graphical interface built using Pygame, featuring a fully functional deck of cards, tableau columns, foundation piles, and a stockpile. It implements different data structures including python lists, stacks, queues, linked lists and hash-map.
 
 ## Table of Contents
 - [Features](#features)
@@ -11,10 +11,15 @@
 - [Contributing](#contributing)
 - [License](#license)
 
-### Step 1: Extract the Project Files
-
-1. Download the `solitaire-cs.rar` file.
-2. Extract the contents of `solitaire-cs.rar` to a folder on your computer. Inside this folder, you'll find the project files, including the `.sln` file needed to open the project in Visual Studio.
+## Features
+- **Card Setup**: Implements the standard Klondike card layout with 7 tableau columns and 4 foundation piles.
+- **Game Logic**: Card movement between tableau columns, foundation piles, and stockpile, adhering to Klondike rules.
+- **Data Structures**: Stack (LIFO) for tableau columns and foundation piles <br>
+Queue (FIFO) for the stockpile <br>
+Linked List for tableau piles for card manipulation <br>
+Dictionary for tracking card positions and states <br>
+- **User Interface**:  Built with Pygame, providing an interactive GUI where players can select and drop cards.
+- **Win Condition**:  The game ends when all cards are moved to the foundation piles in the correct order.
 
 ### Step 2: Install Microsoft Visual Studio
 
