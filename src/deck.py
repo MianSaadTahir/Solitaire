@@ -19,21 +19,23 @@ class Deck:
         self.selectionHighlightedColor = (255, 0, 0)
         self.slotBGcolor = (0, 128, 0)
 
+        # back card image name
+        name = os.path.join(
+            '..', 'assets', 'cards', 'backCard.png')
+        # link card with its image
+        self.backCard = pygame.image.load(name)
+        self.faceDownCard = self.placeFaceDownCard()
+
         self.suit = ['hearts', 'diamonds', 'spades', 'clubs']
         self.cards = []
         self.rank = ['ace', '2', '3', '4', '5', '6',
                      '7', '8', '9', '10', 'jack', 'queen', 'king']
 
-        # back card name
-        name = os.path.join(
-            '..', 'assets', 'cards', 'back_card.png')
-        # link card with its image
-        self.backCard = pygame.image.load(name)
-        self.faceDownCard = self.placeFaceDownCard()
-
+    # place downCard
     def placeFaceDownCard(self):
         return pygame.transform.scale(self.backCard, self.dimensions)
 
+    # initialize card piles
     def initPile(self, size):
         width, h = size
         padding = 50
@@ -44,9 +46,9 @@ class Deck:
 
         # stock and waste piles
         stock = Pile(
-            self.cards[28:], Xinitial, padding, self.dimensions, type="stock")
+            self.cards[28:], Xinitial, padding, self.dimensions, type="STOCK")
         waste = Pile([], Xinitial + self.dimensions[0] + padding,
-                     padding, self.dimensions, type="waste")
+                     padding, self.dimensions, type="WASTE")
 
         # foundation piles spacing
         fPadding = self.dimensions[0] + padding
@@ -55,13 +57,13 @@ class Deck:
 
         # foundations
         f1 = Pile(
-            [], fInitial, padding, self.dimensions, type="foundation")
+            [], fInitial, padding, self.dimensions, type="FOUNDATION")
         f2 = Pile([], fInitial + fPadding,
-                  padding, self.dimensions, type="foundation")
+                  padding, self.dimensions, type="FOUNDATION")
         f3 = Pile([], fInitial + fPadding * 2,
-                  padding, self.dimensions, type="foundation")
+                  padding, self.dimensions, type="FOUNDATION")
         f4 = Pile([], fInitial + fPadding * 3,
-                  padding, self.dimensions, type="foundation")
+                  padding, self.dimensions, type="FOUNDATION")
 
         # tableaus
         t1 = Pile([self.cards[0]], Xinitial, Yinitial, self.dimensions)
@@ -79,9 +81,10 @@ class Deck:
                   * 6 + padding * 6, Yinitial, self.dimensions)
 
         # collection of all piles
-        self.pileCards = [t1, t2, t3, t4, t5, t6,
-                          t7, stock, waste, f1, f2, f3, f4]
+        self.pileCards = [stock, waste, f1, f2, f3, f4, t1, t2, t3, t4, t5, t6,
+                          t7]
 
+    # initialize deck of cards
     def initDeck(self):
         for suit in self.suit:
             for rank in self.rank:
@@ -97,7 +100,7 @@ class Deck:
     def deckPrint(self, screen):
         for pile in self.pileCards:
             # draw blank box for foundations
-            if pile.type == 'foundation' or (pile.type == 'deck' and len(pile.cards) == 0):
+            if pile.type == 'FOUNDATION' or (pile.type == 'deck' and len(pile.cards) == 0):
                 pygame.draw.rect(screen, self.slotBGcolor, [
                                  pile.x, pile.y, pile.CardW, pile.CardH])
             # iterate through each card in a pile
@@ -113,18 +116,65 @@ class Deck:
                 screen.blit(img, [card.getX(), card.getY()])
 
     # update deck after a card or a pile is moved
-    def Deckupdate(self, changedPiles, Yaxis):
+    def Deckupdate(self, changedPiles, heightOFscreen):
         for pile in self.pileCards:
             pile.FaceUpChange()
             pile.CardCoordinateChange()
         if changedPiles:
             for pile in changedPiles:
-                pile.fit_pile_on_screen(Yaxis)
+                pile.adjustTableauPilesLength(heightOFscreen)
                 pile.CardCoordinateChange()
 
     # shuffle the cards deck
     def deckShuffle(self):
         random.shuffle(self.cards)
+
+    # card select mouse event
+    def mouseClick(self, mouseCoordinate):
+        isValidMove = False
+        changedPiles = None
+
+        # if no card selected then check if any pile was selected
+        if not self.isSelected:
+            self.pileSelected = self.checkPileClick(mouseCoordinate)
+
+        # if a pile was selected
+            if self.pileSelected:
+                # check if cards in pile should be deselected
+                self.isSelected, self.cardsSelected, PilesReset = self.pileSelected.selectionCheck(
+                    mouseCoordinate, self.pileCards)
+
+            if self.pileSelected:
+                # stock pile card draw
+                if self.pileSelected.type == 'STOCK':
+                    isValidMove = True
+                # undo selection
+                if PilesReset:
+                    self.deSelect()
+                else:
+                    # if there are one or more cards selected
+                    if len(self.cardsSelected) != 0:
+                        # calculate selected cards area dimension
+                        self.selectedCardBoxDimension = self.pileSelected.cardSelectionArea(
+                            self.cardsSelected[0])
+        # if a card is already selected
+        else:
+            # determine where to move pile of cards
+            targetPile = self.checkPileClick(mouseCoordinate)
+            # if source and destination pile exist
+            if self.pileSelected and targetPile:
+                # attempt to move cards from source pile to target pile using transferCardToPile method.
+                #  if yes then it is valid move
+                isValidMove = self.pileSelected.moveSelectedCardsToPile(
+                    self.cardsSelected, targetPile, self.rank)
+                # return that piles are changed so that deck is updated about source and destination piles
+                changedPiles = self.pileSelected, targetPile
+            # if cards not moved
+            else:
+                changedPiles = None
+            # deselect the choice
+            self.deSelect()
+        return changedPiles, isValidMove
 
     # in imgs dictionary, retrieve each img name and value and set its relevant dimension size
     def resizeImgs(self):
@@ -141,47 +191,15 @@ class Deck:
 
     # undo card selection
     def deSelect(self):
+        self.cardsSelected = []
         self.isSelected = False
         self.pileSelected = None
-        self.cardsSelected = []
-
-    # card select mouse event
-    def handle_left_click(self, mouseCoordinate):
-        changedPiles = None
-        valid_move = False
-
-        if not self.isSelected:
-            self.pileSelected = self.checkPileClick(mouseCoordinate)
-
-            if self.pileSelected:
-                self.isSelected, self.cardsSelected, deselect_pile = self.pileSelected.check_if_selected(
-                    mouseCoordinate, self.pileCards)
-
-            if self.pileSelected:
-                if self.pileSelected.type == 'stock':
-                    valid_move = True
-                # undo selection
-                if deselect_pile:
-                    self.deSelect()
-                else:
-                    if len(self.cardsSelected) != 0:
-                        self.selectedCardBoxDimension = self.pileSelected.get_selection_area(
-                            self.cardsSelected[0])
-        else:
-            pile_to_transfer_to = self.checkPileClick(mouseCoordinate)
-            if self.pileSelected and pile_to_transfer_to:
-                valid_move = self.pileSelected.move_cards_to_pile(
-                    self.cardsSelected, pile_to_transfer_to, self.rank)
-                changedPiles = self.pileSelected, pile_to_transfer_to
-            else:
-                changedPiles = None
-            self.deSelect()
-        return changedPiles, valid_move
 
     # win condition
+
     def winCheck(self):
         foundations = [
-            pile for pile in self.pileCards if pile.type == 'foundation']
+            pile for pile in self.pileCards if pile.type == 'FOUNDATION']
         for pile in foundations:
             if len(pile.cards) < 13:
                 return False

@@ -2,168 +2,225 @@ from collections import namedtuple
 
 
 class Pile:
-    def __init__(self, cards, x, y, dimensions, type="tableau"):
-        self.CardOrder = namedtuple(
-            'CardOrder', ['foundation', 'rank', 'color_suit'])
-        self.CardW, self.CardH = dimensions
-
-        # Set a default value for draw_three
-        self.draw_three = False  # This is your default setting for draw_three
-
-        self.type = type
-        if self.type == 'tableau':
-            self.fanned = True
-            self.order = self.CardOrder(
-                foundation='king', rank=-1, color_suit='alt-color')
-            self.faceUp = 'top'
-            self.height = 500
-        elif self.type == 'foundation':
-            self.fanned = False
-            self.order = self.CardOrder(
-                foundation='ace', rank=1, color_suit='same-suit')
-            self.faceUp = 'all'
-            self.height = self.CardH
-        elif self.type == 'waste':
-            self.fanned = False
-            self.order = self.CardOrder(
-                foundation=None, rank=None, color_suit=None)
-            self.faceUp = 'all'
-            self.height = self.CardH
-        elif self.type == 'stock':
-            self.fanned = False
-            self.order = self.CardOrder(
-                foundation=None, rank=None, color_suit=None)
-            self.faceUp = 'none'
-            self.height = self.CardH
-
-        self.max_card_spacing = 60
-        self.min_card_spacing = 10
-        self.card_spacing = self.max_card_spacing
-        self.bottom_margin = 10
+    def __init__(self, cards, Xcoordinate, Ycoordinate, dimensions, type="TABLEAU"):
         self.cards = cards
-        self.x = x
-        self.y = y
-        self.adjust_pile()
+        self.y = Ycoordinate
+        self.x = Xcoordinate
+        self.CardW, self.CardH = dimensions
+        self.type = type
+        self.PileOrder = namedtuple(
+            'PileOrder', ['suit', 'rank', 'base'])
 
-    def card_bottom(self):
-        return self.cards[-1].coordinate[1] + self.CardH if self.cards else self.y
+# self.spread means to distrubute the cards in vertical line as in tableau
+        # stock pile cards order
+        if self.type == 'STOCK':
+            self.tableauSpread = False
+            self.placementOrder = self.PileOrder(
+                suit=None, rank=None, base=None)
+            self.PileHeight = self.CardH
+            self.faceUp = 'none'
 
-    def adjust_pile(self):
-        self.FaceUpChange()
-        self.CardCoordinateChange()
+        # waste pile cards order
+        elif self.type == 'WASTE':
+            self.tableauSpread = False
+            self.placementOrder = self.PileOrder(
+                suit=None, rank=None, base=None)
+            self.PileHeight = self.CardH
+            self.faceUp = 'ALL'
 
-    def CardCoordinateChange(self):
-        if len(self.cards) > 0:
-            for index, card in enumerate(self.cards):
-                if self.fanned:
-                    card.coordinate = (self.x, self.y +
-                                       (index * self.card_spacing))
-                else:
-                    card.coordinate = (self.x, self.y)
+        # foundation pile cards order
+        elif self.type == 'FOUNDATION':
+            self.tableauSpread = False
+            self.placementOrder = self.PileOrder(
+                suit='same', rank=1, base='ace')
+            self.PileHeight = self.CardH
+            self.faceUp = 'ALL'
 
+        # tableau pile cards order
+        elif self.type == 'TABLEAU':
+            # only distribute tableau cards in vertical lines
+            self.tableauSpread = True
+            self.placementOrder = self.PileOrder(
+                suit='alternate',  rank=-1, base='king')
+            self.PileHeight = 450
+            self.faceUp = 'TOP'
+
+        # cards sizes
+        self.footerMargin = 15
+        self.CardMinPadding = 15
+        self.CardMaxPadding = 50
+        self.CardsPadding = self.CardMaxPadding
+        self.RefreshPileLayout()
+
+    # check mouse click
+    def isClicked(self, mouseCoordinate):
+        Xmouse, Ymouse = mouseCoordinate
+        # check if mouse click is within pile boundary
+        return self.x < Xmouse < self.x + self.CardW and self.y < Ymouse < self.y + self.PileHeight
+
+    # check card selection so that onward piles can be moved
+    def selectionCheck(self, mouseCoordinate, piles):
+        PilesReset = False
+        isSelected = False
+        CardsSelected = []
+
+        # Check if a card in the pile was clicked
+        for index, card in enumerate(self.cards):
+            if card.checkClick(mouseCoordinate) and card.faceUp:
+                isSelected = True
+                CardsSelected = self.cards[index:]
+
+        #  stock pile behavior
+        if self.type == 'STOCK':
+            PilesReset = True
+            wastePile = next(
+                (pile for pile in piles if pile.type == 'WASTE'), None)
+
+            if len(self.cards) != 0:
+                # moving top card from stock to waste
+                wastePile.cards.append(self.cards[-1])
+                del self.cards[-1]
+            else:
+                # when stock is empty, refill the stock from waste
+                self.cards = wastePile.cards[::-1]
+                wastePile.cards = []
+
+        return isSelected, CardsSelected, PilesReset
+
+    # determine card select area
+    def cardSelectionArea(self, card):
+        # selected card highlight thickness
+        selectedCardHighlight = 5
+        # x and y coordinates for selection area
+        xAXIS = card.getX() - selectedCardHighlight
+        yAXIS = card.getY() - selectedCardHighlight
+        # width and height of selected area
+        selectionWidth = self.CardW + (selectedCardHighlight * 2)
+        selectionHeight = self.CardH + (selectedCardHighlight * 2)
+        return [xAXIS, yAXIS, selectionWidth, selectionHeight]
+
+    # determine which card to turn face up
     def FaceUpChange(self):
         if len(self.cards) != 0:
             for index, card in enumerate(self.cards):
                 if self.faceUp == 'none':
                     card.faceUp = False
-                elif self.faceUp == 'top' and index == len(self.cards) - 1:
+                    # only turn last card of pile
+                elif self.faceUp == 'TOP' and index == len(self.cards) - 1:
                     card.faceUp = True
-                elif self.faceUp == 'all':
+                    # turn all cards
+                elif self.faceUp == 'ALL':
                     card.faceUp = True
 
-    def fit_pile_on_screen(self, screen_height):
-        screen_bottom = screen_height - self.bottom_margin
+    # determine whether to stack cards or place with padding
+    def CardCoordinateChange(self):
         if len(self.cards) > 0:
-            if self.card_bottom() > screen_bottom:
-                while self.card_spacing > self.min_card_spacing:
-                    if self.card_bottom() < screen_bottom:
-                        break
-                    else:
-                        self.card_spacing -= 1 / len(self.cards)
-                        self.CardCoordinateChange()
-            elif self.card_bottom() < screen_bottom:
-                while self.card_spacing < self.max_card_spacing:
-                    if self.card_bottom() > screen_bottom:
-                        break
-                    else:
-                        self.card_spacing += 1 / len(self.cards)
-                        self.CardCoordinateChange()
-            self.card_spacing = round(self.card_spacing)
-
-    def check_if_selected(self, mouseCoordinate, piles):
-        selection = False
-        selected_cards = []
-        deselect_pile = False
-        for index, card in enumerate(self.cards):
-            if card.checkClick(mouseCoordinate) and card.faceUp:
-                selection = True
-                selected_cards = self.cards[index:]
-        if self.type == 'stock':
-            deselect_pile = True
-            wastepile = next(
-                (pile for pile in piles if pile.type == 'waste'), None)
-            if len(self.cards) != 0:
-                if self.draw_three:
-                    index_range = min(len(self.cards), 3)
-                    for _ in range(index_range):
-                        wastepile.cards.append(self.cards[-1])
-                        del self.cards[-1]
+            for index, card in enumerate(self.cards):
+                # if tableau spread is enabled, position cards with proper padding
+                if self.tableauSpread:
+                    card.coordinate = (self.x, self.y +
+                                       (index * self.CardsPadding))
+                # else just place cards on each other
                 else:
-                    wastepile.cards.append(self.cards[-1])
-                    del self.cards[-1]
-            else:
-                self.cards = wastepile.cards[::-1]
-                wastepile.cards = []
-        return selection, selected_cards, deselect_pile
+                    card.coordinate = (self.x, self.y)
 
-    def is_transfer_valid(self, target_pile, selected_cards, rank_order):
-        if len(target_pile.cards) != 0:
-            bottom_card = target_pile.cards[-1]
-        else:
-            bottom_card = None
-        top_card = selected_cards[0]
+    # adjust vertical length of tablue piles
+    def adjustTableauPilesLength(self, heightOFscreen):
+        # calculating bottom boundary of the screen
+        screenLimit = heightOFscreen - self.footerMargin
+        # if pile has cards
+        if len(self.cards) > 0:
+
+            #  decrease card spacing if the last card is beyond  screen limit
+            if self.lastCard() > screenLimit:
+                while self.CardsPadding > self.CardMinPadding:
+                    # break if the last card is yet within screen bounds
+                    if self.lastCard() < screenLimit:
+                        break
+                    else:
+                        # else reduce card spacing by decrementing and update card coordinates
+                        self.CardsPadding -= 1 / len(self.cards)
+                        self.CardCoordinateChange()
+
+            # if last card is above the screen limit, increase card spacing
+            elif self.lastCard() < screenLimit:
+                while self.CardsPadding < self.CardMaxPadding:
+                    # break if the last card exceeds screen bounds
+                    if self.lastCard() > screenLimit:
+                        break
+                    else:
+                        # else increase card spacing by incrementing and update card coordinates
+                        self.CardsPadding += 1 / len(self.cards)
+                        self.CardCoordinateChange()
+
+            # clean up final output
+            self.CardsPadding = round(self.CardsPadding)
+
+    # retrieve position of last card if it exists in self.cards[]
+    def lastCard(self):
+        return self.cards[-1].coordinate[1] + self.CardH if self.cards else self.y
+
+    def validMove(self, PileDestination, CardsSelected, sequenceOfRanks):
         valid = True
-        if target_pile.type in ['stock', 'waste']:
-            valid = False
-        if bottom_card is None:
-            if target_pile.order.foundation is not None:
-                if top_card.rank != target_pile.order.foundation:
-                    valid = False
+        # determine bottom card in destination pile
+        if len(PileDestination.cards) != 0:
+            PileLastCard = PileDestination.cards[-1]
         else:
-            if target_pile.order.rank is not None:
-                rank_index = rank_order.index(bottom_card.rank)
-                if top_card.rank != rank_order[rank_index + target_pile.order.rank]:
+            PileLastCard = None
+
+        # top card of the selected cards
+        firstCard = CardsSelected[0]
+
+        # ---rules---#
+
+        # Rules for an empty destination pile
+        if PileLastCard is None:
+            # compare base rank
+            if PileDestination.placementOrder.base is not None:
+                # check if first card rank match required base rank in destination pile
+                if firstCard.rank != PileDestination.placementOrder.base:
+                    # if rank doesnot match, its invalid move
                     valid = False
-            if target_pile.order.color_suit is not None:
-                if target_pile.order.color_suit == 'alt-color':
-                    if top_card.color == bottom_card.color:
+
+        # Rules for a non-empty destination pile
+        else:
+            # pile has suit or color requirment
+            if PileDestination.placementOrder.suit is not None:
+                # alternating colors or same suit based on destination pile requirements
+                if PileDestination.placementOrder.suit == 'alternate':
+                    # means that color of first and last card must be different
+                    if firstCard.color == PileLastCard.color:
                         valid = False
-                elif target_pile.order.color_suit == 'same-suit':
-                    if top_card.suit != bottom_card.suit:
+                elif PileDestination.placementOrder.suit == 'same':
+                    # means that suits of first and last card must be different
+                    if firstCard.suit != PileLastCard.suit:
                         valid = False
+            # check that first and piles last card rank is correct
+            if PileDestination.placementOrder.rank is not None:
+                lastCardRankPosition = sequenceOfRanks.index(PileLastCard.rank)
+                # check if the selected card's rank follows the required rank sequence
+                if firstCard.rank != sequenceOfRanks[lastCardRankPosition + PileDestination.placementOrder.rank]:
+                    valid = False
+
+        # Rule, cannot move cards to stock or waste piles
+        if PileDestination.type in ['WASTE', 'STOCK']:
+            valid = False
+
         return valid
 
-    def move_cards_to_pile(self, selected_cards, target_pile, rank_order):
-        if self.is_transfer_valid(target_pile, selected_cards, rank_order):
-            for card in selected_cards:
-                target_pile.cards.append(card)
+    # move cards a target pile if transfer is valid
+    def moveSelectedCardsToPile(self, CardsSelected, PileDestination, sequenceOfRanks):
+        # check valid moves
+        if self.validMove(PileDestination, CardsSelected, sequenceOfRanks):
+            # if yes, transfer each card selected to desired pile
+            for card in CardsSelected:
+                PileDestination.cards.append(card)
+                # keep removing card from current pile
                 self.cards.remove(card)
             return True
         return False
 
-    def get_selection_area(self, card):
-        padding = 10
-        rect_x = card.getX() - padding
-        rect_y = card.getY() - padding
-        card_index = self.cards.index(card)
-        if self.fanned:
-            distance_from_top = card_index
-        else:
-            distance_from_top = 0
-        rect_w = self.CardW + (padding * 2)
-        rect_h = self.CardH + (padding * 2)
-        return [rect_x, rect_y, rect_w, rect_h]
-
-    def isClicked(self, mouseCoordinate):
-        Xmouse, Ymouse = mouseCoordinate
-        return self.x < Xmouse < self.x + self.CardW and self.y < Ymouse < self.y + self.height
+    # update pile
+    def RefreshPileLayout(self):
+        self.CardCoordinateChange()
+        self.FaceUpChange()
