@@ -1,6 +1,6 @@
 # Solitaire
 
-**Klondike-Solitaire**  is a Python implementation of the classic Solitaire card game, following the traditional Klondike rules. The game allows users to interact with a graphical interface built using Pygame, featuring a fully functional deck of cards, tableau columns, foundation piles, and a stockpile. It implements different data structures including python lists, stacks, queues, linked lists and hash-map.
+**Klondike-Solitaire**  is a Python implementation of the classic Solitaire card game, following the traditional Klondike rules. The game allows users to interact with a graphical interface built using Pygame, featuring a fully functional deck of cards, tableau columns, foundation piles, and a stockpile. It implements different data structures including python lists, stacks, queues, array/list, linked lists and hash-map.
 
 ## Table of Contents
 - [Features](#features)
@@ -16,6 +16,7 @@
 - **Game Logic**: Card movement between tableau columns, foundation piles, and stockpile, adhering to Klondike rules.
 - **Data Structures**: Stack (LIFO) for tableau columns and foundation piles <br>
 Queue (FIFO) for the stockpile <br>
+Array/List for storing and shuffling the deck <br>
 Linked List for tableau piles for card manipulation <br>
 Array/List for storing and shuffling the deck <br>
 Dictionary for tracking card positions and states <br>
