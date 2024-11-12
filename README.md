@@ -18,7 +18,6 @@
 Queue (FIFO) for the stockpile <br>
 Array/List for storing and shuffling the deck <br>
 Linked List for tableau piles for card manipulation <br>
-Array/List for storing and shuffling the deck <br>
 Dictionary for tracking card positions and states <br>
 - **User Interface**:  Built with Pygame, providing an interactive GUI where players can select and drop cards.
 - **Win Condition**:  The game ends when all cards are moved to the foundation piles in the correct order.
