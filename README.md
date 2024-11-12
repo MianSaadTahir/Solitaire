@@ -16,6 +16,7 @@
 - **Game Logic**: Card movement between tableau columns, foundation piles, and stockpile, adhering to Klondike rules.
 - **Data Structures**: Stack (LIFO) for tableau columns and foundation piles <br>
 Queue (FIFO) for the stockpile <br>
+Array/List for storing and shuffling the deck <br>
 Linked List for tableau piles for card manipulation <br>
 Dictionary for tracking card positions and states <br>
 - **User Interface**:  Built with Pygame, providing an interactive GUI where players can select and drop cards.
