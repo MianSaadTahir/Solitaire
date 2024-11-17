@@ -28,7 +28,7 @@ Dictionary for tracking card positions and states <br>
 ## Usage
 1. Clone the repository:
    `git clone https://github.com/miansaadtahir/solitaire.git`
-2. Install pygame dependencies by running command `pip install pygame` in terminal
+2. Install pygame dependencies by running command `pip install pygame` in terminal.
 3. Navigate to the project directory:
    `cd Solitaire/src/`
 4. Open terminal in this directory and run command `python game.py` to launch the game.
