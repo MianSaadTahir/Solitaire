@@ -11,15 +11,15 @@ A Python implementation of the classic Solitaire card game, following the tradit
 - [Contributing](#contributing)
 
 ## Features
-- **Card Setup**: Implements the standard Klondike card layout with 7 tableau columns and 4 foundation piles.
-- **Game Logic**: Card movement between tableau columns, foundation piles, and stockpile, adhering to Klondike rules.
-- **Data Structures**: Stack (LIFO) for tableau columns and foundation piles <br>
+- Implements the standard Klondike card layout with 7 tableau columns and 4 foundation piles.
+- Card movement between tableau columns, foundation piles, and stockpile, adhering to Klondike rules.
+- Stack (LIFO) for tableau columns and foundation piles <br>
 Queue (FIFO) for the stockpile <br>
 Array/List for storing and shuffling the deck <br>
 Linked List for tableau piles for card manipulation <br>
 Dictionary for tracking card positions and states <br>
-- **User Interface**:  Built with Pygame, providing an interactive GUI where players can select and drop cards.
-- **Win Condition**:  The game ends when all cards are moved to the foundation piles in the correct order.
+- An interactive Pygame GUI where players can select and drop cards.
+- The game ends when all cards are moved to the foundation piles in the correct order.
 
 ## Screenshot
 <img src="assets/wireframe/screenshot.png" alt="Screenshot" width="75%">
