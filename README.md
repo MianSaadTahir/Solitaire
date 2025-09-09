@@ -9,7 +9,6 @@
 - [Documentation](#documentation)
 - [Technologies Used](#technologies-used)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 - **Card Setup**: Implements the standard Klondike card layout with 7 tableau columns and 4 foundation piles.
