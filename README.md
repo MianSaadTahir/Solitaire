@@ -1,13 +1,13 @@
 # Solitaire
 
-**Klondike Solitaire**  is a Python implementation of the classic Solitaire card game, following the traditional Klondike rules. The game allows users to interact with a graphical interface built using Pygame, featuring a fully functional deck of cards, tableau columns, foundation piles, and a stockpile. It implements different data structures including lists, stacks, queues, array/list, linked lists and hash-map.
+A Python implementation of the classic Solitaire card game, following the traditional Klondike rules. The game allows users to interact with a graphical interface built using Pygame, featuring a fully functional deck of cards, tableau columns, foundation piles, and a stockpile. It implements different data structures including lists, stacks, queues, array/list, linked lists and hash-map.
 
 ## Table of Contents
 - [Features](#features)
 - [Screenshots](#screenshots)
-- [Usage](#usage)
 - [Documentation](#documentation)
 - [Technologies Used](#technologies-used)
+- [Usage](#usage)
 - [Contributing](#contributing)
 
 ## Features
@@ -24,13 +24,6 @@ Dictionary for tracking card positions and states <br>
 ## Screenshot
 <img src="assets/wireframe/screenshot.png" alt="Screenshot" width="75%">
 
-## Usage
-1. Clone the repository:
-   `git clone https://github.com/miansaadtahir/solitaire.git`
-2. Install pygame dependencies by running command `pip install pygame` in terminal.
-3. Navigate to the project directory:
-   `cd Solitaire/src/`
-4. Open terminal in this directory and run command `python game.py` to launch the game.
 
 ## Documentation
 For a detailed overview of the project and its features, visit the [Documentation](./documentation/) in the repository.
@@ -38,6 +31,14 @@ For a detailed overview of the project and its features, visit the [Documentatio
 ## Technologies Used
 - Python
 - Pygame
+  
+## Usage
+1. Clone the repository:
+   `git clone https://github.com/miansaadtahir/solitaire.git`
+2. Navigate to the project directory:
+   `cd .\src\`
+3. Install required dependencies `pip install pygame`.
+4. Run `python game.py` to launch the game.
 
 ## Contributing
 Contributions, issues, and feature requests are welcome!  
