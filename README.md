@@ -9,7 +9,7 @@ A Python implementation of the classic Solitaire card game, following the tradit
 - [Technologies Used](#technologies-used)
 - [Usage](#usage)
 - [Contributing](#contributing)
-
+- [License](#license)
 ## Features
 - Implements the standard Klondike card layout with 7 tableau columns and 4 foundation piles
 - Card movement between tableau columns, foundation piles, and stockpile, adhering to Klondike rules
